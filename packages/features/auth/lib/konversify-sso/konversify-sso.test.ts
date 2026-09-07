@@ -95,7 +95,7 @@ const mintToken = (
   options: {
     audience?: string;
     issuer?: string;
-    expiresIn?: string;
+    expiresIn?: string | number;
     kid?: string;
   } = {},
   key: nodeCrypto.KeyObject = signingKey
@@ -305,7 +305,7 @@ describe("konversifySsoLogin", () => {
 
   it("an expired token is rejected with 401", async () => {
     const result = await login(
-      await mintToken(validClaims(), { expiresIn: "-1m" }),
+      await mintToken(validClaims(), { expiresIn: Math.floor(Date.now() / 1000) - 60 }),
       new MemoryDb()
     );
     expect(result).toMatchObject({ ok: false, status: 401 });

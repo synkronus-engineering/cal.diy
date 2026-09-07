@@ -4,6 +4,7 @@ import type { User } from "@calcom/prisma/client";
 import { CreationSource, MembershipRole } from "@calcom/prisma/enums";
 import type { PrismaClient } from "@calcom/prisma/client";
 import type { KonversifySsoClaims } from "./types";
+import { KonversifySsoError } from "./verify-token";
 
 type Db = Pick<PrismaClient, "user" | "team" | "membership">;
 
@@ -46,6 +47,9 @@ export async function ensureKonversifyTeam(workspaceId: string, db: Db) {
     where: { slug, parentId: null },
     orderBy: { id: "asc" },
   });
+  if (!canonical) {
+    throw new KonversifySsoError(503, "team_recheck_failed");
+  }
   if (canonical.id !== created.id) {
     await db.team.delete({ where: { id: created.id } });
     return canonical;
