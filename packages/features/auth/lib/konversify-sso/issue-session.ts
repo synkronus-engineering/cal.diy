@@ -31,17 +31,17 @@ export async function issueKonversifySession(
     throw new KonversifySessionError(503, "not_configured");
   }
 
-  const options = getOptions({
+  const { jwt } = getOptions({
     getDubId: () => undefined,
     getTrackingData: () => ({}),
   });
-  // getOptions' return type models jwt as optional (the app-side module
-  // augmentation that pins it lives in apps/web); the encode wrapper is the
-  // same one the login flow calls.
-  if (!options.jwt) {
+  // getOptions' return type models jwt (and its encode) as optional — the
+  // app-side module augmentation that pins them lives in apps/web. Both the
+  // package-level tsc and the web build must pass without casts.
+  if (!jwt?.encode) {
     throw new KonversifySessionError(503, "not_configured");
   }
-  const sessionToken = await options.jwt.encode({
+  const sessionToken = await jwt.encode({
     token: {
       sub: String(user.id),
       name: user.name ?? undefined,
