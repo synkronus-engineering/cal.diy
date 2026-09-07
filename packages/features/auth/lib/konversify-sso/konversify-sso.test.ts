@@ -1,3 +1,5 @@
+// @vitest-environment node
+
 import http from "node:http";
 import nodeCrypto from "node:crypto";
 import { AddressInfo } from "node:net";
