@@ -31,10 +31,17 @@ export async function issueKonversifySession(
     throw new KonversifySessionError(503, "not_configured");
   }
 
-  const sessionToken = await getOptions({
+  const options = getOptions({
     getDubId: () => undefined,
     getTrackingData: () => ({}),
-  }).jwt.encode({
+  });
+  // getOptions' return type models jwt as optional (the app-side module
+  // augmentation that pins it lives in apps/web); the encode wrapper is the
+  // same one the login flow calls.
+  if (!options.jwt) {
+    throw new KonversifySessionError(503, "not_configured");
+  }
+  const sessionToken = await options.jwt.encode({
     token: {
       sub: String(user.id),
       name: user.name ?? undefined,
