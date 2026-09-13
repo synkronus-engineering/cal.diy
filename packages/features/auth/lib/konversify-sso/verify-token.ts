@@ -1,4 +1,3 @@
-import process from "node:process";
 import { createRemoteJWKSet, jwtVerify } from "jose";
 
 import type { KonversifySsoClaims } from "./types";
