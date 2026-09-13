@@ -9,6 +9,17 @@ export const dynamic = "force-dynamic";
 
 const bodySchema = z.object({ token: z.string().min(1) });
 
+// TEMP DIAGNOSTIC (remove after the env-visibility question is settled):
+// reports what the running server process actually resolves for the flag.
+export async function GET() {
+  return NextResponse.json({
+    flag: process.env.KONVERSIFY_SSO_ENABLED,
+    flagTrue: process.env.KONVERSIFY_SSO_ENABLED === "true",
+    jwks: Boolean(process.env.KONVERSIFY_JWKS_URL),
+    nodeEnv: process.env.NODE_ENV,
+  });
+}
+
 export async function POST(req: NextRequest) {
   const parsed = bodySchema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) {
