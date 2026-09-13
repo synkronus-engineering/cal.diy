@@ -1,5 +1,3 @@
-import process from "node:process";
-
 import { WEBAPP_URL } from "@calcom/lib/constants";
 import { defaultCookies } from "@calcom/lib/default-cookies";
 import type { User } from "@calcom/prisma/client";
